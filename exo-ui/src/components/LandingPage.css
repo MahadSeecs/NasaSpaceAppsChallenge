@@ -1,0 +1,30 @@
+/* LandingPage.css */
+.landing-page {
+    text-align: center;
+    margin: 50px;
+}
+
+.dropdown {
+    margin-top: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute; /* Positioning can be adjusted as needed */
+    z-index: 1000; /* Ensures it appears above other content */
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #357ab7;
+}
