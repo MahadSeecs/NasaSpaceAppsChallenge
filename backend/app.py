@@ -30,7 +30,7 @@ class ExoplanetData(BaseModel):
 # Map numeric labels to class names
 class_map = {0: "FALSE POSITIVE", 1: "CONFIRMED"}
 
-model = joblib.load("lgbm_model.joblib")
+model = joblib.load("model/exo_lgbm_binary.joblib", mmap_mode=None)
 # -------------------------
 # Endpoints
 # -------------------------
