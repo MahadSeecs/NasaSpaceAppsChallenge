@@ -2,43 +2,37 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useEarthMood } from "../context/EarthMoodContext";
 
-const moods = ["😢", "🙂", "😄"];
+const emojis = ["😢", "🙂", "😄"]; // sad → neutral → happy
 
-const AnimatedEarth = ({ size = "medium" }) => {
-  const { mood } = useEarthMood();
+const AnimatedEarth = ({ size = "small" }) => {
+  const { progress, stage } = useEarthMood();
 
   const sizeClasses = {
-    small: "text-4xl",
-    medium: "text-8xl",
-    large: "text-[10rem]",
+    tiny: "text-2xl",
+    small: "text-3xl",
+    medium: "text-6xl",
+    large: "text-9xl",
   };
 
   return (
-    <motion.div
-      className={`${sizeClasses[size]} text-white select-none`}
-      animate={{
-        rotate: [0, 360],
-        scale: [1, 1.05, 1],
-      }}
-      transition={{
-        rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-        scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-      }}
-    >
-      <motion.span
-        animate={{
-          filter:
-            mood === 0
-              ? "drop-shadow(0 0 8px #3b82f6)"
-              : mood === 1
-              ? "drop-shadow(0 0 15px #22c55e)"
-              : "drop-shadow(0 0 25px #facc15)",
-        }}
-        transition={{ duration: 0.8 }}
+    <div className={`flex items-center gap-3 ${sizeClasses[size]}`}>
+      {/* Earth emoji */}
+      <motion.div
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
       >
-        {moods[mood]}
-      </motion.span>
-    </motion.div>
+        {emojis[stage]}
+      </motion.div>
+
+      {/* Mood Progress Bar */}
+      <div className="w-24 h-3 bg-gray-600 rounded-full overflow-hidden">
+        <motion.div
+          className="h-full bg-green-400 rounded-full"
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.5 }}
+        />
+      </div>
+    </div>
   );
 };
 
