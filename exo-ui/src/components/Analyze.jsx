@@ -223,15 +223,9 @@ const Analyze = () => {
         radius_re: parseFloat(formData.radius_re),
         insolation_se: parseFloat(formData.insolation_se),
         teq_k: parseFloat(formData.teq_k),
-
-        // star
-        star: {
-          id: formData.st_id || null,
-          name: formData.st_name || buildStarName(formData.mission, formData.st_id),
-          st_teff_k: parseFloat(formData.st_teff_k),
-          st_logg_cgs: parseFloat(formData.st_logg_cgs),
-          st_rad_re: parseFloat(formData.st_rad_re),
-        },
+        st_teff_k: parseFloat(formData.st_teff_k),
+        st_logg_cgs: parseFloat(formData.st_logg_cgs),
+        st_rad_re: parseFloat(formData.st_rad_re),
       };
 
       const response = await fetch(GENERAL_MODEL, {
@@ -340,14 +334,14 @@ const Analyze = () => {
 
           {starMode === "pick" && (
             <div className="mt-4">
-              <Field label="select star">
+              <Field label="Select star">
                 {/* full-width select; tip is now a tiny caption under it */}
                 <select
                   value={formData.st_id || ""}
                   onChange={(e) => onPickStar(e.target.value)}
                   className="w-full rounded-lg bg-slate-800 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/60"
                 >
-                  <option value="">select a star</option>
+                  <option value="">Select A Star</option>
                   {filteredStars.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.label}
@@ -467,7 +461,7 @@ const Analyze = () => {
             disabled={isLoading}
             className="rounded-2xl border border-white/15 bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-3 text-white text-lg shadow-xl hover:from-purple-500 hover:to-blue-500 transition-colors disabled:opacity-50"
           >
-            {isLoading ? "analyzing…" : "analyze"}
+            {isLoading ? "Analyzing…" : "Analyze"}
           </button>
         </motion.div>
       </div>
