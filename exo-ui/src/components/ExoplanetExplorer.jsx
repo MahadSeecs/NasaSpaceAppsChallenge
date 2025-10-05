@@ -412,7 +412,7 @@ function ExoplanetExplorer() {
           </label>
         </div>
         <div className="mt-2">
-          <label className="text-sm opacity-75">upload custom CSV</label>
+          <label className="text-sm opacity-75">Upload custom CSV</label>
           <input
             type="file"
             accept=".csv"
@@ -451,6 +451,7 @@ function ExoplanetExplorer() {
           filters={filters} 
           setHoverPlanet={setHoverPlanet} 
           selectedPlanet={selectedPlanet} 
+          setSelectedPlanet={setSelectedPlanet}
         />
         
         {selectedPlanet && (
