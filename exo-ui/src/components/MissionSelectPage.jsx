@@ -2,11 +2,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarfieldBackground from './StarfieldBackground';
+import {useEarthMood} from '../context/EarthMoodContext'
 
 const MissionSelectPage = () => {
+
   const navigate = useNavigate();
+  const {cheerUp} = useEarthMood()
 
   const handleMissionSelect = (mission) => {
+    cheerUp();
     navigate(`/visualize/${mission.toLowerCase()}`);
   };
 
