@@ -49,17 +49,11 @@ pip install -r requirements.txt
 
 ## Usage
 
-To train the model:
+For frontend:
+npm run dev inside exo-ui folder 
 
-```bash
-python train.py --dataset [dataset_name] --epochs [number] --batch_size [number]
-```
-
-To evaluate the model:
-
-```bash
-python evaluate.py --model [model_path] --test_data [test_dataset]
-```
+For backend
+uvicorn app:app --reload inside backend folder
 
 ## Results
 
@@ -68,3 +62,7 @@ The model achieved an accuracy of [insert accuracy]% on the test dataset, with p
 ## Conclusion
 
 This project demonstrates the potential of AI/ML models in automating the detection of exoplanets from large astronomical datasets. Future work will focus on improving model generalization and exploring additional features to enhance classification
+
+![alt text](image-2.png)
+![alt text](image-1.png)
+![alt text](image.png)
