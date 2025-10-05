@@ -14,8 +14,8 @@ function ResultModal({ isOpen, onClose, result, planetName }) {
   const isConfirmed = result?.prediction === "CONFIRMED";
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+    <div 
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
@@ -249,85 +249,26 @@ const Analyze = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-auto bg-gradient-to-b from-slate-900 via-slate-950 to-black text-slate-100">
-      <motion.div
-        initial={{ y: -14, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 140, damping: 16, delay: 0.15 }}
-        className="pointer-events-none absolute left-1/2 top-6 z-20 -translate-x-1/2 rounded-2xl bg-black/40 px-5 py-2 text-sm backdrop-blur border border-white/10"
+    <div className="relative h-screen w-full overflow-auto bg-gradient-to-b from-slate-900 to-black text-white p-8">
+      <h1 className="text-4xl font-bold mb-8 text-center">Analyze Exoplanet Data</h1>
+      
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-3xl mx-auto bg-gray-800 p-6 rounded-xl shadow-lg space-y-4"
       >
-        Analyze Exoplanet Data
-      </motion.div>
-
-      <div className="mx-auto max-w-6xl px-4 pb-24 pt-20">
-        {/* mission + star selection */}
-        <motion.div
-          initial={{ y: 12, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 120, damping: 18 }}
-          className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-xl"
-        >
-          <SectionTitle>
-            <span className="inline-flex items-center gap-2">
-              context
-              <span
-                className="inline-block h-3 w-3 rounded-full bg-purple-400/70"
-                title="pick a catalog star from the dropdown, all stellar fields will autofill (you can still edit them)"
-                aria-label="tip"
-              />
-            </span>
-          </SectionTitle>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Field label="mission">
-              <select
-                name="mission"
-                value={formData.mission}
-                onChange={handleChange}
-                className="w-full rounded-lg bg-slate-800 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/60"
-              >
-                <option value="Kepler">Kepler</option>
-                <option value="TESS">TESS</option>
-              </select>
-            </Field>
-
-            <Field label="search star id">
-              <input
-                type="text"
-                placeholder={`search ${formData.mission === "TESS" ? "TIC" : "KIC"} …`}
-                value={starSearch}
-                onChange={(e) => setStarSearch(e.target.value)}
-                className="w-full rounded-lg bg-slate-800 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/60"
-              />
-            </Field>
-
-            <Field label="star mode">
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setStarMode("pick")}
-                  className={`flex-1 rounded-lg px-3 py-2 text-sm border ${
-                    starMode === "pick"
-                      ? "bg-purple-600 border-purple-500 text-white"
-                      : "bg-slate-800 border-white/10 text-slate-200 hover:bg-slate-750"
-                  }`}
-                >
-                  Pick Existing
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStarMode("new")}
-                  className={`flex-1 rounded-lg px-3 py-2 text-sm border ${
-                    starMode === "new"
-                      ? "bg-purple-600 border-purple-500 text-white"
-                      : "bg-slate-800 border-white/10 text-slate-200 hover:bg-slate-750"
-                  }`}
-                >
-                  Create New
-                </button>
-              </div>
-            </Field>
-          </div>
+        {/* Mission Dropdown */}
+        <div className="flex flex-col">
+          <label className="mb-1 font-semibold">Mission</label>
+          <select
+            name="mission"
+            value={formData.mission}
+            onChange={handleChange}
+            className="p-2 rounded-md bg-gray-700 text-white"
+          >
+            <option value="Kepler">Kepler</option>
+            <option value="TESS">TESS</option>
+          </select>
+        </div>
 
           {loadingStars && <div className="mt-2 text-xs opacity-80">loading star list…</div>}
           {starError && <div className="mt-2 text-xs text-red-400">{starError}</div>}
@@ -472,6 +413,7 @@ const Analyze = () => {
         result={result}
         planetName="custom input planet"
       />
+    </div>
     </div>
   );
 };
