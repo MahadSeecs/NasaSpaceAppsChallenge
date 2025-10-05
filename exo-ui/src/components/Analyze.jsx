@@ -11,6 +11,7 @@ function ResultModal({ isOpen, onClose, result, planetName }) {
   return (
     <div 
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in"
+
       onClick={onClose}
     >
       <div 
@@ -191,7 +192,13 @@ const Analyze = () => {
   };
 
   return (
-    <div className="relative h-screen w-full overflow-auto bg-gradient-to-b from-slate-900 to-black text-white p-8">
+    <div className="relative h-screen w-screen overflow-auto text-white">
+    {/* Starfield covers the whole page */}
+    <div className="absolute inset-0 -z-10">
+      <StarfieldBackground />
+    </div>
+    
+      <div className="relative z-10 p-8">
       <h1 className="text-4xl font-bold mb-8 text-center">Analyze Exoplanet Data</h1>
       
       <form
@@ -242,6 +249,7 @@ const Analyze = () => {
         result={result}
         planetName="Custom Input Planet"
       />
+    </div>
     </div>
   );
 };

@@ -10,12 +10,12 @@ const LandingPage = () => {
   const { cheerUp } = useEarthMood();
 
   const handleAnalyzeClick = () => {
-    cheerUp();
+    cheerUp(5);
     navigate('/analyze');
 };
 
   const handleVisualizeClick = () => {
-    cheerUp();
+    cheerUp(5);
     navigate('/visualize');};   
 
   return (

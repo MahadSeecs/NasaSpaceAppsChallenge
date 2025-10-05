@@ -41,7 +41,7 @@ const MissionSelectPage = () => {
           onClick={() => handleMissionSelect('TESS')}
           className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-8 px-16 rounded-xl text-3xl flex items-center justify-center gap-3 shadow-2xl transition-all transform hover:scale-110 active:scale-100"
         >
-          🌟 TESS
+          🚀 TESS
         </button>
       </div>
     </div>
