@@ -1,6 +1,11 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
+from lightgbm import LGBMClassifier
+import pandas as pd
+import joblib
+import os
+import uvicorn
 
 app = FastAPI()
 
@@ -8,41 +13,59 @@ app = FastAPI()
 # Pydantic Models
 # -------------------------
 
-class TESSRecord(BaseModel):
-    id: int
-    planet_name: str
-    period_days: float
-    radius_re: float
-    st_teff_k: Optional[float] = None
-    st_mass_ms: Optional[float] = None
+class ExoplanetData(BaseModel):
+    mission: str = Field(..., description="Mission name")
+    period_days: float = Field(..., description="Orbital period in days")
+    t0_bjd: float = Field(..., description="Time of transit center (BJD)")
+    duration_hours: float = Field(..., description="Transit duration in hours")
+    depth_ppm: float = Field(..., description="Transit depth in parts per million")
+    ror: float = Field(..., description="Radius ratio (planet/star)")
+    radius_re: float = Field(..., description="Planet radius in Earth radii")
+    insolation_se: float = Field(..., description="Insolation flux (Earth=1)")
+    teq_k: float = Field(..., description="Equilibrium temperature in Kelvin")
+    st_teff_k: float = Field(..., description="Stellar effective temperature in Kelvin")
+    st_logg_cgs: float = Field(..., description="Stellar surface gravity (cgs)")
+    st_rad_re: float = Field(..., description="Stellar radius in solar radii")
 
-class KeplerRecord(BaseModel):
-    kepid: int
-    kepoi_name: str
-    disposition: str
-    koi_period: float
-    koi_score: Optional[float] = None
+# Map numeric labels to class names
+class_map = {0: "FALSE POSITIVE", 1: "CONFIRMED"}
 
-class K2Record(BaseModel):
-    id: int
-    host_name: str
-    period_days: float
-    radius_re: float
-    teq_k: Optional[float] = None
-
+model = joblib.load("lgbm_model.joblib")
 # -------------------------
 # Endpoints
 # -------------------------
 
-@app.post("/tess")
-async def post_tess(records: List[TESSRecord]):
-    # Example: return count + data
-    return {"dataset": "TESS", "count": len(records), "records": records}
+@app.post("/predict")
+async def process_request(planet: ExoplanetData):
+    prediction_result = predict_exoplanet(planet)
+    return prediction_result
 
-@app.post("/kepler")
-async def post_kepler(records: List[KeplerRecord]):
-    return {"dataset": "Kepler", "count": len(records), "records": records}
+def predict_exoplanet(data: ExoplanetData) -> dict:
+    # Convert Pydantic model to DataFrame
+    df = pd.DataFrame([data.dict()])
 
-@app.post("/k2")
-async def post_k2(records: List[K2Record]):
-    return {"dataset": "K2", "count": len(records), "records": records}
+    # Make prediction
+    prediction_proba = model.predict_proba(df)  # probabilities
+    # Predict class label and probabilities
+    prediction_numeric = model.predict(df)[0]
+    prediction_proba = model.predict_proba(df)[0]
+
+    # Map numeric prediction to class name
+    prediction_label = class_map[prediction_numeric]
+
+    return {
+        "prediction": prediction_label,
+        "probabilities": {
+            class_map[0]: prediction_proba[0],
+            class_map[1]: prediction_proba[1]
+        }
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", 8000)),
+        reload=True,
+        log_level="info"
+    )
