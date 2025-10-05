@@ -79,14 +79,18 @@ npm install
 ## Usage
 
 For frontend:
+```bash
 npm run dev inside exo-ui folder 
+```
 
 For backend
+```bash
 uvicorn app:app --reload inside backend folder
+```
 
 ## Results
 
-The model achieved an accuracy of [insert accuracy]% on the test dataset, with precision, recall, and F1 score values indicating a balanced performance across all classes.
+The model achieved an accuracy of 89.12% accuracy on the test dataset, with precision 83.04%, recall 90.91% indicating a balanced performance across all classes.
 
 ## Conclusion
 
