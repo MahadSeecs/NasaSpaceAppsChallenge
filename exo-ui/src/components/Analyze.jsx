@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 const MISSION_FILES = {
-  Kepler: "/data/koi.csv",  // kepid, koi_steff, koi_srad, koi_slogg
-  TESS: "/data/toi.csv",    // tid/tic, st_teff, st_rad, st_logg
+  Kepler: "/data/koi.csv",
+  TESS: "/data/toi.csv",
 };
 
 function ResultModal({ isOpen, onClose, result, planetName }) {
@@ -104,8 +104,6 @@ function Bar({ label, value, tone = "green" }) {
 const Analyze = () => {
   const [formData, setFormData] = useState({
     mission: "Kepler",
-
-    // planet
     period_days: "",
     t0_bjd: "",
     duration_hours: "",
@@ -114,8 +112,6 @@ const Analyze = () => {
     radius_re: "",
     insolation_se: "",
     teq_k: "",
-
-    // star
     st_id: "",
     st_name: "",
     st_teff_k: "",
@@ -129,13 +125,12 @@ const Analyze = () => {
 
   const [stars, setStars] = useState([]);
   const [starSearch, setStarSearch] = useState("");
-  const [starMode, setStarMode] = useState("pick"); // pick | new
+  const [starMode, setStarMode] = useState("pick");
   const [loadingStars, setLoadingStars] = useState(false);
   const [starError, setStarError] = useState("");
 
   const GENERAL_MODEL = import.meta.env.VITE_GENERAL_MODEL || "http://localhost:8000/api/predict";
 
-  // load stars when mission changes
   useEffect(() => {
     const run = async () => {
       setStars([]);
@@ -154,7 +149,6 @@ const Analyze = () => {
 
         setStars(parsed);
 
-        // reset star selection on mission change
         setFormData((d) => ({
           ...d,
           st_id: "",
@@ -171,20 +165,52 @@ const Analyze = () => {
       }
     };
     run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.mission]);
 
   const filteredStars = useMemo(() => {
     const q = starSearch.trim().toLowerCase();
     if (!q) return stars;
-    return stars.filter(
-      (s) => s.label.toLowerCase().includes(q) || String(s.id).toLowerCase().includes(q)
-    );
+    
+    // Split search query into terms for multi-word search
+    const terms = q.split(/\s+/).filter(Boolean);
+    
+    return stars.filter((s) => {
+      const label = s.label.toLowerCase();
+      const id = String(s.id).toLowerCase();
+      
+      // Check if all search terms match either label or id
+      return terms.every(term => 
+        label.includes(term) || id.includes(term)
+      );
+    }).sort((a, b) => {
+      // Prioritize exact ID matches
+      const aIdMatch = String(a.id).toLowerCase() === q;
+      const bIdMatch = String(b.id).toLowerCase() === q;
+      if (aIdMatch && !bIdMatch) return -1;
+      if (!aIdMatch && bIdMatch) return 1;
+      
+      // Then prioritize starts-with matches
+      const aStartsWith = a.label.toLowerCase().startsWith(q) || String(a.id).startsWith(q);
+      const bStartsWith = b.label.toLowerCase().startsWith(q) || String(b.id).startsWith(q);
+      if (aStartsWith && !bStartsWith) return -1;
+      if (!aStartsWith && bStartsWith) return 1;
+      
+      // Finally sort by ID numerically
+      return Number(a.id) - Number(b.id);
+    });
   }, [stars, starSearch]);
 
   const onPickStar = (idStr) => {
     if (idStr === "__new__") {
       setStarMode("new");
+      setFormData((d) => ({
+        ...d,
+        st_id: "",
+        st_name: "",
+        st_teff_k: "",
+        st_logg_cgs: "",
+        st_rad_re: "",
+      }));
       return;
     }
     setStarMode("pick");
@@ -213,8 +239,6 @@ const Analyze = () => {
     try {
       const body = {
         mission: formData.mission,
-
-        // planet
         period_days: parseFloat(formData.period_days),
         t0_bjd: parseFloat(formData.t0_bjd),
         duration_hours: parseFloat(formData.duration_hours),
@@ -249,14 +273,10 @@ const Analyze = () => {
   };
 
   return (
-    <div className="relative h-screen w-full overflow-auto bg-gradient-to-b from-slate-900 to-black text-white p-8">
+    <div className="relative min-h-screen w-full overflow-auto bg-gradient-to-b from-slate-900 to-black text-white p-8">
       <h1 className="text-4xl font-bold mb-8 text-center">Analyze Exoplanet Data</h1>
       
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-3xl mx-auto bg-gray-800 p-6 rounded-xl shadow-lg space-y-4"
-      >
-        {/* Mission Dropdown */}
+      <div className="max-w-3xl mx-auto bg-gray-800 p-6 rounded-xl shadow-lg space-y-4">
         <div className="flex flex-col">
           <label className="mb-1 font-semibold">Mission</label>
           <select
@@ -270,36 +290,70 @@ const Analyze = () => {
           </select>
         </div>
 
-          {loadingStars && <div className="mt-2 text-xs opacity-80">loading star list…</div>}
-          {starError && <div className="mt-2 text-xs text-red-400">{starError}</div>}
-
-          {starMode === "pick" && (
-            <div className="mt-4">
-              <Field label="Select star">
-                {/* full-width select; tip is now a tiny caption under it */}
-                <select
-                  value={formData.st_id || ""}
-                  onChange={(e) => onPickStar(e.target.value)}
-                  className="w-full rounded-lg bg-slate-800 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/60"
+        {loadingStars && <div className="mt-2 text-xs opacity-80">loading star list…</div>}
+        {starError && <div className="mt-2 text-xs text-red-400">{starError}</div>}
+        
+        {starMode === "pick" && (
+          <motion.div
+            initial={{ y: 12, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            className="mt-4"
+          >
+            <Field label="Select star">
+              <input
+                type="text"
+                placeholder="Search by star ID or name..."
+                value={starSearch}
+                onChange={(e) => setStarSearch(e.target.value)}
+                className="w-full rounded-lg bg-slate-800 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500/60 placeholder:text-slate-500 mb-2"
+                autoComplete="off"
+              />
+              <select
+                key={`${formData.mission}-${starSearch}`}
+                value={formData.st_id || ""}
+                onChange={(e) => onPickStar(e.target.value)}
+                size={8}
+                className="w-full rounded-lg bg-slate-800 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/60"
                 >
-                  <option value="">Select A Star</option>
-                  {filteredStars.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.label}
-                    </option>
-                  ))}
-                  <option value="__new__">create new star…</option>
-                </select>
+                <option value="__new__">Create New Star…</option>
+                <option value="">Select A Star</option>
+                {filteredStars.slice(0, 200).map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
 
-                <p className="mt-1 text-[11px] leading-tight text-slate-400/75">
-                  Pick from catalog to auto-fill stellar fields (you can still edit)
-                </p>
-              </Field>
+              <p className="mt-1 text-[11px] leading-tight text-slate-400/75">
+                {filteredStars.length > 200 && `Showing 200 of ${filteredStars.length} results. `}
+                {filteredStars.length === 0 && starSearch && "No matching stars found. "}
+                Pick from catalog to auto-fill stellar fields (you can still edit)
+              </p>
+            </Field>
+          </motion.div>
+        )}
+
+        {starMode === "new" && (
+          <motion.div
+            initial={{ y: 12, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            className="mt-4"
+          >
+            <div className="flex items-center gap-2 text-sm text-purple-300">
+              <span>Creating new star entry</span>
+              <button
+                type="button"
+                onClick={() => setStarMode("pick")}
+                className="text-xs underline hover:text-purple-200"
+              >
+                Select Existing Star
+              </button>
             </div>
-          )}
-        </motion.div>
+          </motion.div>
+        )}
 
-        {/* stellar parameters */}
         <motion.div
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -349,7 +403,6 @@ const Analyze = () => {
           </div>
         </motion.div>
 
-        {/* planet parameters */}
         <motion.div
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -389,7 +442,6 @@ const Analyze = () => {
           </div>
         </motion.div>
 
-        {/* submit */}
         <motion.div
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -414,11 +466,8 @@ const Analyze = () => {
         planetName="custom input planet"
       />
     </div>
-    </div>
   );
 };
-
-// small atoms
 
 function SectionTitle({ children }) {
   return <div className="text-[11px] uppercase tracking-[0.22em] text-slate-300 mb-4">{children}</div>;
@@ -447,8 +496,6 @@ const InputField = ({ label, name, value, onChange, type = "number", step = "any
     />
   </div>
 );
-
-// helpers
 
 function safeNum(x) {
   if (x === null || x === undefined) return "";
