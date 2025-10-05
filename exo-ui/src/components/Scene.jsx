@@ -25,7 +25,7 @@ function Scene({ planets, speedScale, sizeScale, filters, setHoverPlanet , selec
   useEffect(() => {
     const onMove = (e) => {
       if (hover) {
-        setScreenPos([e.clientX, e.clientY]);
+        setScreenPos([e.clientX, e.clientY, e.clientZ]);
       }
     };
     window.addEventListener("mousemove", onMove);

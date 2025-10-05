@@ -13,43 +13,45 @@ const DISP_COLORS = {
 
 function Planet({ data, scale = 1, speedScale = 1, onHover, isSelected }) {
   const ref = useRef();
-  const t0 = useRef(Math.random() * 1000);
+  const t0 = useRef(Math.random() * 1000); // random starting phase
   const [hovered, setHovered] = useState(false);
 
-  const color = isSelected ? "yellow" : DISP_COLORS[data.disp] || "#aaa";
+  // Compute speed based on hover state
+  const floatSpeed = hovered ? 0 : 2; // 0 = pause, 2 = normal
+
+  const color = isSelected || hovered ? "yellow" : DISP_COLORS[data.disp] || "#aaa";
 
   // Scale planet radius relative to star radius
-  const planetRadiusInSolarRadii = data.planetRadiusRe / 109; // Convert to solar radii
-  const relativeRadius = (planetRadiusInSolarRadii / data.starRadius) * 2; // Visual scaling factor
-  const radius = Math.max(0.05, Math.min(1.5, relativeRadius * 30)) * scale; // Scale for visibility
+  const planetRadiusInSolarRadii = data.planetRadiusRe / 109; // Convert Earth radii → solar radii
+  const relativeRadius = (planetRadiusInSolarRadii / data.starRadius) * 2; // visual scaling factor
+  const radius = Math.max(0.05, Math.min(1.5, relativeRadius * 30)) * scale; // clamp for visibility
 
-  // Inclination (tilt of orbital plane)
-  const inclination = Math.random() * 2 * Math.PI; // 0 → 240° in radians
+  // Random inclination for orbital plane
+  const inclination = useRef(Math.random() * 2 * Math.PI).current;
 
+  // Orbit parameters
   const orbitalR = Math.max(10, Math.min(60, data.semiMajorAxis * 200)); // scaled orbit size
-  const omega = (2 * Math.PI) / Math.max(1, data.orbitalPeriod); // rad/day (normalized)
+  const omega = (2 * Math.PI) / Math.max(1, data.orbitalPeriod); // rad/day
 
   useFrame((state) => {
-  const t = (state.clock.getElapsedTime() + t0.current) * speedScale * 0.25;
-  const theta = data.phase0 + t * omega;
+    const t = (state.clock.getElapsedTime() + t0.current) * speedScale * 0.25;
+    const theta = data.phase0 + t * omega;
 
-  const x = Math.cos(theta) * orbitalR;
-  const z = Math.sin(theta) * orbitalR;
+    const x = Math.cos(theta) * orbitalR;
+    const z = Math.sin(theta) * orbitalR;
 
-  if (ref.current) {
-    ref.current.position.set(x, 0, z); // stays in XZ plane
-    ref.current.rotation.y += 0.01;
-  }
-});
-
+    if (ref.current) {
+      ref.current.position.set(x, 0, z); // stays in XZ plane
+      ref.current.rotation.y += 0.01;
+    }
+  });
 
   return (
     <group rotation={[inclination, 0, 0]}>
-    {/* Orbit tilted by inclination */}
-        <Orbit radius={orbitalR} color="#333" />
-      
+      {/* Orbit tilted by inclination */}
+      <Orbit radius={orbitalR} color="#333" />
 
-      <Float speed={2} rotationIntensity={0.2} floatIntensity={0.3}>
+      <Float speed={floatSpeed} rotationIntensity={0.2} floatIntensity={0.3}>
         <mesh
           ref={ref}
           onPointerOver={(e) => {
