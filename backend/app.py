@@ -6,9 +6,17 @@ import pandas as pd
 import joblib
 import os
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # -------------------------
 # Pydantic Models
 # -------------------------
@@ -35,7 +43,7 @@ model = joblib.load("model/exo_lgbm_binary.joblib", mmap_mode=None)
 # Endpoints
 # -------------------------
 
-@app.post("/predict")
+@app.post("/api/predict")
 async def process_request(planet: ExoplanetData):
     prediction_result = predict_exoplanet(planet)
     return prediction_result

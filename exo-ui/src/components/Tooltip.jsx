@@ -1,6 +1,9 @@
 // components/Tooltip.jsx
 import React, { useState } from "react";
 
+
+const GENERAL_MODEL = import.meta.env.GENERAL_MODEL || "http://localhost:8000/api/predict";
+
 function Tooltip({ planet, screenPos }) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -10,12 +13,29 @@ function Tooltip({ planet, screenPos }) {
   const handleInspect = async () => {
     setIsLoading(true);
     try {
-      // Example API call - replace with your actual endpoint
-      const response = await fetch(`/api/planets/${planet.name}`, {
-        method: 'GET',
+      // Prepare the request body matching your ExoplanetData model
+      const requestBody = {
+        mission: planet.mission || "Unknown",
+        period_days: parseFloat(planet.orbitalPeriod) || 0,
+        t0_bjd: planet.t0_bjd || 0,
+        duration_hours: planet.duration_hours || 0,
+        depth_ppm: parseFloat(planet.transitDepthPpm) || 0,
+        ror: planet.ror || 0,
+        radius_re: parseFloat(planet.planetRadiusRe) || 0,
+        insolation_se: planet.insolation_se || 0,
+        teq_k: planet.teq_k || 0,
+        st_teff_k: parseFloat(planet.starTemp) || 0,
+        st_logg_cgs: planet.st_logg_cgs || 0,
+        st_rad_re: parseFloat(planet.starRadius) || 0
+      };
+
+      // Replace with your actual API endpoint
+      const response = await fetch(GENERAL_MODEL, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(requestBody)
       });
       
       if (!response.ok) {
@@ -24,8 +44,20 @@ function Tooltip({ planet, screenPos }) {
       
       const data = await response.json();
       
-      // Display results as alert
-      alert(JSON.stringify(data, null, 2));
+      // Format the alert message nicely
+      const message = `
+🔍 Exoplanet Classification Result
+
+Planet: ${planet.name}
+
+Prediction: ${data.prediction}
+
+Probabilities:
+- FALSE POSITIVE: ${(data.probabilities["FALSE POSITIVE"] * 100).toFixed(2)}%
+- CONFIRMED: ${(data.probabilities["CONFIRMED"] * 100).toFixed(2)}%
+      `.trim();
+      
+      alert(message);
     } catch (error) {
       alert(`Error inspecting planet: ${error.message}`);
     } finally {
