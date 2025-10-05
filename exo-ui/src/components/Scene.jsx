@@ -5,6 +5,7 @@ import Planet from './Planet';
 import Tooltip from './Tooltip';
 import { OrbitControls, Html, Line, Float, Stars, Environment } from "@react-three/drei";
 import { motion } from "framer-motion";
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
 function Scene({ planets, speedScale, sizeScale, filters, setHoverPlanet , selectedPlanet}) {
   const [hover, setHover] = useState(null);
@@ -52,7 +53,9 @@ function Scene({ planets, speedScale, sizeScale, filters, setHoverPlanet , selec
         {/* host star */}
         <mesh castShadow receiveShadow>
           <sphereGeometry args={[starRadiusVisual, 48, 48]} />
-          <meshStandardMaterial emissive="#ffaa00" emissiveIntensity={0.8} color="#442200" />
+          <EffectComposer>
+  <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={1.2} />
+</EffectComposer> 
         </mesh>
 
                 {planets.map((p) => (
