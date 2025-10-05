@@ -7,7 +7,7 @@ import { OrbitControls, Html, Line, Float, Stars, Environment } from "@react-thr
 import { motion } from "framer-motion";
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
-function Scene({ planets, speedScale, sizeScale, filters, setHoverPlanet , selectedPlanet}) {
+function Scene({ planets, speedScale, sizeScale, filters, setHoverPlanet , selectedPlanet, setSelectedPlanet}) {
   const [hover, setHover] = useState(null);
   const [screenPos, setScreenPos] = useState(null);
 
@@ -20,6 +20,7 @@ function Scene({ planets, speedScale, sizeScale, filters, setHoverPlanet , selec
   const onHover = (p, point) => {
     setHover(p);
     setHoverPlanet?.(p);
+    setSelectedPlanet(null)
   };
 
   useEffect(() => {

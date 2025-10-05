@@ -451,6 +451,7 @@ function ExoplanetExplorer() {
           filters={filters} 
           setHoverPlanet={setHoverPlanet} 
           selectedPlanet={selectedPlanet} 
+          setSelectedPlanet={setSelectedPlanet}
         />
         
         {selectedPlanet && (
