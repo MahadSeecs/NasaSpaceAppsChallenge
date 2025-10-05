@@ -432,7 +432,7 @@ function ExoplanetExplorer() {
         </div>
 
         <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs leading-relaxed">
-          <div className="font-medium">how to use</div>
+          <div className="font-medium">How to use</div>
           <ul className="mt-1 list-disc pl-4 opacity-80">
             <li>select a mission to load default data</li>
             <li>or upload your own KOI CSV file</li>
