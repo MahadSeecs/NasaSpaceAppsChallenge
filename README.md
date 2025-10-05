@@ -14,37 +14,28 @@ Your challenge is to create an AI/ML model that is trained on one or more of the
 * **Kepler**: Light curve data with classifications like Confirmed Exoplanet and False Positive.
 * **TESS**: Light curve data with classifications such as Known Planet, Ambiguous Planet Candidate, and Planet Candidate.
 
-## Model Architecture
-
-* **Model Type**: [Specify the type of model used, e.g., Convolutional Neural Network, Transformer, etc.]
-* **Input Features**: [List the features used, e.g., light curve data, stellar parameters, etc.]
-* **Training Data**: [Specify the datasets and the number of samples used for training.]
 
 ## Performance Metrics
 
-| Metric               | Value          |
-| -------------------- | -------------- |
-| Accuracy             | [Insert value] |
-| Precision            | [Insert value] |
-| Recall               | [Insert value] |
-| F1 Score             | [Insert value] |
-| Area Under ROC Curve | [Insert value] |
+| Metric               | Value    |
+| -------------------- | -------- |
+| Accuracy             | 0.8906   |
+| Precision (Weighted) | 0.8946   |
+| Recall (Weighted)    | 0.8906   |
+| F1 Score (Weighted)  | 0.8914   |
 
-*These metrics were evaluated using a [cross-validation/split] approach with [number] folds/splits.*
+
 
 ## Installation
 
 1. Clone the repository:
 
-```bash
-git clone [repository_url]
-cd [repository_name]
-```
 
 2. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
+npm install
 ```
 
 ## Usage
