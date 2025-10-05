@@ -1,15 +1,17 @@
-// App.js
+// App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
-import ExoplanetExplorer from './components/ExoplanetExplorer'; // Your existing component
-import Analyze from './components/Analyze'; // Replace with your actual Analyze component
+import MissionSelectPage from './components/MissionSelectPage';
+import ExoplanetExplorer from './components/ExoplanetExplorer';
+import Analyze from './components/Analyze';
 
 const App = () => {
   return (
     <Router>
-      <Routes> {/* Use Routes instead of Switch */}
+      <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/visualize" element={<MissionSelectPage />} />
         <Route path="/visualize/:mission" element={<ExoplanetExplorer />} />
         <Route path="/analyze" element={<Analyze />} />
       </Routes>
