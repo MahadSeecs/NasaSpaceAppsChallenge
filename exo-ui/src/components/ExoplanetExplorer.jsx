@@ -535,20 +535,37 @@ function ExoplanetExplorer() {
           {selectedKepid ? `Star System: ${mission === 'tess' ? 'TIC' : 'KIC'} ${selectedKepid}` : 'exoplanet explorer'}
         </motion.div>
 
-        <motion.div
+<motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 130, damping: 16, delay: 0.3 }}
-          className="pointer-events-auto absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-2xl border border-white/10 bg-black/50 p-3 text-xs text-white backdrop-blur"
+          className="pointer-events-auto absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-2xl border border-white/20 bg-black/60 px-6 py-3 text-xs text-white backdrop-blur-md shadow-2xl"
         >
-          <div className="flex items-center gap-3">
-            <span className="opacity-80">legend</span>
-            <span className="h-3 w-3 rounded-full" style={{ background: DISP_COLORS.confirmed }}></span>
-            <span className="opacity-80">confirmed</span>
-            <span className="h-3 w-3 rounded-full" style={{ background: DISP_COLORS.candidate }}></span>
-            <span className="opacity-80">candidate</span>
-            <span className="h-3 w-3 rounded-full" style={{ background: DISP_COLORS.fp }}></span>
-            <span className="opacity-80">false positive</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <span className="h-4 w-4 rounded-full block" style={{ background: 'white', boxShadow: '0 0 8px rgba(255,255,255,0.6)' }}></span>
+              </div>
+              <span className="opacity-90 font-medium">Star</span>
+            </div>
+            <div className="h-4 w-px bg-white/20"></div>
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full block" style={{ background: DISP_COLORS.confirmed, boxShadow: `0 0 6px ${DISP_COLORS.confirmed}` }}></span>
+              <span className="opacity-90">Confirmed</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full block" style={{ background: DISP_COLORS.candidate, boxShadow: `0 0 6px ${DISP_COLORS.candidate}` }}></span>
+              <span className="opacity-90">Candidate</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full block" style={{ background: DISP_COLORS.fp, boxShadow: `0 0 6px ${DISP_COLORS.fp}` }}></span>
+              <span className="opacity-90">False positive</span>
+            </div>
+            <div className="h-4 w-px bg-white/20"></div>
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full block" style={{ background: '#ffd700', boxShadow: '0 0 8px rgba(255,215,0,0.8)' }}></span>
+              <span className="opacity-90">Selected</span>
+            </div>
           </div>
         </motion.div>
       </div>
