@@ -167,6 +167,7 @@ function ExoplanetExplorer() {
           return {
             id: `toi-${toiStr || i}`,
             kepid: starId,
+            mission: "tess",
             toi: toiStr,
             name: planetName,
             host,
@@ -233,6 +234,7 @@ function ExoplanetExplorer() {
 
           return {
             id: `koi-${i}`,
+            mission: "kepler",
             kepid,
             name,
             host,
@@ -320,7 +322,7 @@ function ExoplanetExplorer() {
         className="z-30 flex w-80 flex-col gap-4 border-r border-white/10 bg-black/40 p-4 backdrop-blur overflow-y-auto"
       >
         <div className="text-lg">
-          exoplanet explorer
+          Exoplanet Explorer
           {mission && (
             <span className="text-sm opacity-75 ml-2">
               ({mission.toUpperCase()})
@@ -526,7 +528,7 @@ function ExoplanetExplorer() {
         >
           {selectedKepid
             ? `Star System: ${mission === "tess" ? "TIC" : "KIC"} ${selectedKepid}`
-            : "exoplanet explorer"}
+            : "Exoplanet Explorer"}
         </motion.div>
 
         <motion.div
@@ -577,7 +579,7 @@ function ExoplanetExplorer() {
                   boxShadow: `0 0 6px ${DISP_COLORS.fp}`,
                 }}
               ></span>
-              <span className="opacity-90">False positive</span>
+              <span className="opacity-90">False Positive</span>
             </div>
             <div className="h-4 w-px bg-white/20"></div>
             <div className="flex items-center gap-2">
