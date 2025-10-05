@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Scene from './Scene';
 import PlanetDetails from './PlanetDetails';
 import useMockPlanets from './useMockPlanets';
+import Tooltip from './Tooltip';
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const mapRange = (value, inMin, inMax, outMin, outMax) => {
@@ -359,26 +360,30 @@ function ExoplanetExplorer() {
           </div>
         )}
 
-        {selectedKepid && (
-          <div className="mt-4">
-            <div className="text-sm opacity-75 mb-2">Planets:</div>
-            <ul className="list-none pl-0">
-              {planets.map(planet => (
-                <li key={planet.id}>
-                  <button 
-                    className={`text-white py-1 px-2 rounded transition-colors duration-200 
-                      ${selectedPlanet?.id === planet.id ? 'bg-purple-600 text-white font-bold' : 'bg-transparent'} 
-                      border-2 border-white hover:bg-purple-700 hover:border-purple-400`}
-                    onClick={() => handlePlanetClick(planet)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {planet.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+{selectedKepid && (
+  <div className="mt-4 text-sm opacity-75">
+    <div className="mb-2">Planets:</div>
+    <div className="flex flex-col gap-1">
+      {planets.map(planet => {
+        const isSelected = selectedPlanet?.id === planet.id;
+        return (
+          <button
+            key={planet.id}
+            onClick={() => handlePlanetClick(planet)}
+            className={`py-1 px-2 rounded border-2 transition-colors duration-200
+              ${isSelected 
+                ? 'bg-purple-600 text-white font-bold border-white' 
+                : 'bg-transparent border-white hover:bg-purple-700 hover:border-purple-400'}
+            `}
+          >
+            {planet.name}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+)}
+
 
         <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
           <label className="flex items-center gap-2">
@@ -406,80 +411,6 @@ function ExoplanetExplorer() {
             <span className="rounded px-2 py-0.5" style={{ background: DISP_COLORS.fp + "22" }}>false positive</span>
           </label>
         </div>
-
-        <div className="mt-2">
-          <div className="mb-1 text-sm opacity-75">planet radius (R⊕)</div>
-          <input
-            type="range"
-            min={0}
-            max={15}
-            step={0.1}
-            value={filters.radMin}
-            onChange={(e) => setFilters({ ...filters, radMin: parseFloat(e.target.value) })}
-            className="w-full"
-          />
-          <input
-            type="range"
-            min={0}
-            max={15}
-            step={0.1}
-            value={filters.radMax}
-            onChange={(e) => setFilters({ ...filters, radMax: parseFloat(e.target.value) })}
-            className="w-full"
-          />
-          <div className="text-xs">{filters.radMin} – {filters.radMax}</div>
-        </div>
-
-        <div className="mt-2">
-          <div className="mb-1 text-sm opacity-75">orbital period (days)</div>
-          <input
-            type="range"
-            min={0}
-            max={200}
-            step={1}
-            value={filters.perMin}
-            onChange={(e) => setFilters({ ...filters, perMin: parseFloat(e.target.value) })}
-            className="w-full"
-          />
-          <input
-            type="range"
-            min={0}
-            max={200}
-            step={1}
-            value={filters.perMax}
-            onChange={(e) => setFilters({ ...filters, perMax: parseFloat(e.target.value) })}
-            className="w-full"
-          />
-          <div className="text-xs">{filters.perMin} – {filters.perMax}</div>
-        </div>
-
-        <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
-          <label className="flex flex-col gap-1">
-            <span>speed</span>
-            <input
-              type="range"
-              min={0.25}
-              max={4}
-              step={0.25}
-              value={speedScale}
-              onChange={(e) => setSpeedScale(parseFloat(e.target.value))}
-              className="w-full"
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span>size</span>
-            <input
-              type="range"
-              min={0.5}
-              max={2}
-              step={0.1}
-              value={sizeScale}
-              onChange={(e) => setSizeScale(parseFloat(e.target.value))}
-              className="w-full"
-            />
-          </label>
-        </div>
-
         <div className="mt-2">
           <label className="text-sm opacity-75">upload custom CSV</label>
           <input
@@ -523,7 +454,7 @@ function ExoplanetExplorer() {
         />
         
         {selectedPlanet && (
-          <PlanetDetails planet={selectedPlanet} onClose={() => setSelectedPlanet(null)} />
+          <Tooltip planet={selectedPlanet} screenPos={[350,10]} onClose={() => setSelectedPlanet(null)} />
         )}
 
         <motion.div

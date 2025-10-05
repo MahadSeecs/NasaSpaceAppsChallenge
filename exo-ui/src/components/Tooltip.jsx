@@ -5,6 +5,7 @@ import React from "react";
 function Tooltip({ planet, screenPos }) {
   if (!planet || !screenPos) return null;
   const [x, y] = screenPos;
+  console.log('Tooltip position:', x, y);
   return (
     <div
       className="pointer-events-none fixed z-50 rounded-xl bg-black/90 px-4 py-3 text-xs text-white shadow-2xl backdrop-blur border border-purple-500/50"
