@@ -129,6 +129,8 @@ function ExoplanetExplorer() {
       const cStDist = col("st_dist");
       const cStTeff = col("st_teff");
       const cStRad = col("st_rad");
+      // choose random angle of inclination for demo purposes
+      const cStIncl = Math.random() * 360;
       
       console.log("Column indices:", { cToi, cTid, cPeriod, cPrad, cDepth, cStRad });
       
@@ -187,6 +189,7 @@ function ExoplanetExplorer() {
           starTemp,
           starDistance: starDist,
           phase0: Math.random() * Math.PI * 2,
+          inclination: cStIncl,
         };
       }).filter(p => !isNaN(p.orbitalPeriod) && !isNaN(p.planetRadiusRe) && !isNaN(p.semiMajorAxis));
       
@@ -204,6 +207,7 @@ function ExoplanetExplorer() {
       const cTeq = col("koi_teq");
       const cSrad = col("koi_srad");
       const cSteff = col("koi_steff");
+      const cInc = col("koi_incl");
       
       console.log("Kepler Column indices:", { cKepid, cKepoi, cKepler, cPeriod, cPrad, cSma });
       
@@ -241,6 +245,7 @@ function ExoplanetExplorer() {
           starRadius,
           starTemp,
           phase0: Math.random() * Math.PI * 2,
+          inclination: parseFloat(get(cInc)) || (Math.random() * 360),
         };
       }).filter(p => !isNaN(p.orbitalPeriod) && !isNaN(p.planetRadiusRe) && !isNaN(p.semiMajorAxis));
     }
