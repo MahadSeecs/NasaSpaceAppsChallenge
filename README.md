@@ -92,6 +92,6 @@ The model achieved an accuracy of [insert accuracy]% on the test dataset, with p
 
 This project demonstrates the potential of AI/ML models in automating the detection of exoplanets from large astronomical datasets. Future work will focus on improving model generalization and exploring additional features to enhance classification
 
-![alt text](image-2.png)
+<img width="1919" height="906" alt="image" src="https://github.com/user-attachments/assets/9210d3df-4802-40a6-b0fb-6e3ff1bdc8bd" />
 ![alt text](image-1.png)
 ![alt text](image.png)
