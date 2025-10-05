@@ -131,45 +131,71 @@ function Tooltip({ planet, screenPos }) {
   if (!planet || !screenPos) return null;
   const [x, y] = screenPos;
 
-  const handleInspect = async () => {
-    setIsLoading(true);
-    try {
-      const requestBody = {
-        mission: planet.mission || "Unknown",
-        period_days: parseFloat(planet.orbitalPeriod) || 0,
-        t0_bjd: planet.t0_bjd || 0,
-        duration_hours: planet.duration_hours || 0,
-        depth_ppm: parseFloat(planet.transitDepthPpm) || 0,
-        ror: planet.ror || 0,
-        radius_re: parseFloat(planet.planetRadiusRe) || 0,
-        insolation_se: planet.insolation_se || 0,
-        teq_k: planet.teq_k || 0,
-        st_teff_k: parseFloat(planet.starTemp) || 0,
-        st_logg_cgs: planet.st_logg_cgs || 0,
-        st_rad_re: parseFloat(planet.starRadius) || 0
-      };
+const handleInspect = async () => {
+  setIsLoading(true);
+  try {
+    // List of required fields and their names for error messages
+    const requiredFields = [
+      "mission",
+      "orbitalPeriod",
+      "t0_bjd",
+      "duration_hours",
+      "transitDepthPpm",
+      "ror",
+      "planetRadiusRe",
+      "insolation_se",
+      "teq_k",
+      "starTemp",
+      "st_logg_cgs",
+      "starRadius"
+    ];
 
-      const response = await fetch(GENERAL_MODEL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+    // Check for missing or invalid values
+    for (const field of requiredFields) {
+      if (
+        planet[field] === undefined ||
+        planet[field] === null ||
+        (typeof planet[field] === "number" && isNaN(planet[field]))
+      ) {
+        throw new Error(`Missing or invalid field: ${field}`);
       }
-      
-      const data = await response.json();
-      setResult(data);
-      setShowModal(true);
-    } catch (error) {
-      alert(`Error inspecting planet: ${error.message}`);
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    const requestBody = {
+      mission: planet.mission,
+      period_days: parseFloat(planet.orbitalPeriod),
+      t0_bjd: planet.t0_bjd,
+      duration_hours: planet.duration_hours,
+      depth_ppm: parseFloat(planet.transitDepthPpm),
+      ror: planet.ror,
+      radius_re: parseFloat(planet.planetRadiusRe),
+      insolation_se: planet.insolation_se,
+      teq_k: planet.teq_k,
+      st_teff_k: parseFloat(planet.starTemp),
+      st_logg_cgs: planet.st_logg_cgs,
+      st_rad_re: parseFloat(planet.starRadius)
+    };
+
+    const response = await fetch(GENERAL_MODEL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setResult(data);
+    setShowModal(true);
+
+  } catch (error) {
+    alert(`Error inspecting planet: ${error.message}`);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <>

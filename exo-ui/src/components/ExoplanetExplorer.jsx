@@ -158,7 +158,12 @@ function ExoplanetExplorer() {
           const starRadius = parseFloat(get(cStRad)) || 1;
           const starTemp = parseFloat(get(cStTeff)) || 5778;
           const starDist = parseFloat(get(cStDist)) || null;
-
+          const st_logg_cgs = parseFloat(get(col("st_logg"))) || 4.5;
+          const duration_hours = parseFloat(get(col("pl_trandurh"))) || 0;
+          const t0_bjd = parseFloat(get(col("pl_tranmid"))) || 0;
+          const insolation_se = insolation || 0;
+          const ror = rad && starRadius ? rad / starRadius : 0;
+        
           const sma =
             period > 0
               ? Math.pow(period / 365.25, 2 / 3) * 100
@@ -184,6 +189,12 @@ function ExoplanetExplorer() {
             starDistance: starDist,
             phase0: Math.random() * Math.PI * 2,
             inclination: cStIncl,
+            st_logg_cgs: st_logg_cgs,
+            duration_hours: duration_hours,
+            t0_bjd: t0_bjd,
+            insolation_se: insolation_se,
+            ror: ror,
+            teq_k: eqTemp || 0,
           };
         })
         .filter(
@@ -206,6 +217,12 @@ function ExoplanetExplorer() {
       const cSrad = col("koi_srad");
       const cSteff = col("koi_steff");
       const cInc = col("koi_incl");
+      const st_logg_cgs = col("koi_slogg");
+      const duration_hours = col("koi_duration");
+      const t0_bjd = col("koi_time0bk");
+      const insolation_se = col("koi_insol");
+      const ror = col("koi_ror");
+      const teq_k = col("koi_teq");
 
       parsed = rows
         .slice(0, 1000)
@@ -248,6 +265,12 @@ function ExoplanetExplorer() {
             starTemp,
             phase0: Math.random() * Math.PI * 2,
             inclination: parseFloat(get(cInc)) || Math.random() * 360,
+            st_logg_cgs: parseFloat(get(st_logg_cgs)) || 4.5,
+            duration_hours: parseFloat(get(duration_hours)) || 0,
+            t0_bjd: parseFloat(get(t0_bjd)) || 0,
+            insolation_se: parseFloat(get(insolation_se)) || 0,
+            ror: parseFloat(get(ror)) || 0,
+            teq_k: teq_k || 0,
           };
         })
         .filter(
