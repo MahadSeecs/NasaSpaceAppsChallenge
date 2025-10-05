@@ -29,13 +29,13 @@ const MissionSelectPage = () => {
         >
           🪐 Kepler
         </button>
-
+{/* 
         <button
           onClick={() => handleMissionSelect('K2')}
           className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-8 px-16 rounded-xl text-3xl flex items-center justify-center gap-3 shadow-2xl transition-all transform hover:scale-110 active:scale-100"
         >
           🚀 K2
-        </button>
+        </button> */}
 
         <button
           onClick={() => handleMissionSelect('TESS')}
