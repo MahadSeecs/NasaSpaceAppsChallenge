@@ -162,9 +162,9 @@ const handleInspect = async () => {
     }
 
     const requestBody = {
-      mission: planet.mission,
+      //mission: planet.mission,
       period_days: parseFloat(planet.orbitalPeriod),
-      t0_bjd: planet.t0_bjd,
+      //t0_bjd: planet.t0_bjd,
       duration_hours: planet.duration_hours,
       depth_ppm: parseFloat(planet.transitDepthPpm),
       ror: planet.ror,
